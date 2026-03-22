@@ -5,6 +5,9 @@ ext_modules = [
     Pybind11Extension("genesis_bridge",
         ["genesis_bridge.cpp"],
     ),
+    Pybind11Extension("sovereign_spinlock",
+        ["spinlock_kernel.cpp"],
+    ),
 ]
 
 setup(

@@ -84,7 +84,9 @@ class HieroTranslator:
             else:
                 print(f"[ BARRIER REJECTED : SILENCE ] Density = {barrier:.9f}. Vector failed Billion Barrier.")
         else:
-            approved = True # Emulation fallback
+            print("[ ERROR  ] Billion Barrier OFFLINE — Mathematical proof unavailable.")
+            print("[ SILENCE ] Execution halted to prevent non-sovereign overflow.")
+            approved = False # Mandatory Rejection: If we can't prove it, we don't run it.
 
         print(f"[ RESULT ] Final Composite Vector: {total_vector}")
         print(f"[ REASON ] Manifesting the '{'-'.join(active_axioms)}' intent across the 3+1 manifold.")
