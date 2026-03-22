@@ -1,0 +1,84 @@
+# INTERRUPT_SOVEREIGN.all — SOVEREIGN INTERRUPT HANDLER LAYER
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Domain: 4 of 15 — Replaces Linux arch/x86/kernel/irq.c + softirq.c
+# Architect: Joshua Petersen
+
+𒀸 ⚡ [IRQ_MGR_INIT]
+"[IRQ] Sovereign hardware interrupt manager initializing..." 𐡐
+
+# ============================================================
+# 1. HARDWARE IRQ REGISTRATION
+# Maps hardware IRQ lines to Genlex handler routines
+# Replaces Linux linux/interrupt.h + irq/manage.c
+# ============================================================
+𒀸 ⚡ [IRQ_REGISTER_CORE]
+IRQ_INIT
+
+# IRQ 1: Keyboard (PS/2)
+1 STACK_PUSH
+"KBD_ISR" STACK_PUSH
+IRQ_REGISTER
+"[IRQ] Vector 1 (Keyboard)   -> KBD_ISR armed." 𐡐
+
+# IRQ 12: Touchpad/Mouse (PS/2)
+12 STACK_PUSH
+"MOUSE_ISR" STACK_PUSH
+IRQ_REGISTER
+"[IRQ] Vector 12 (Mouse)     -> MOUSE_ISR armed." 𐡐
+
+# IRQ 16: NVMe Controller (PCIe MSI-X mapped)
+16 STACK_PUSH
+"NVME_ISR" STACK_PUSH
+IRQ_REGISTER
+"[IRQ] Vector 16 (NVMe)      -> NVME_ISR armed." 𐡐
+
+# IRQ 17: Intel I219-LM Ethernet
+17 STACK_PUSH
+"ETH_ISR" STACK_PUSH
+IRQ_REGISTER
+"[IRQ] Vector 17 (Ethernet)  -> ETH_ISR armed." 𐡐
+
+# IRQ 18: Intel 8265 Wi-Fi
+18 STACK_事前    # Vector 18
+"WIFI_ISR" STACK_PUSH
+IRQ_REGISTER
+"[IRQ] Vector 18 (Wi-Fi)     -> WIFI_ISR armed." 𐡐
+
+# ============================================================
+# 2. SOFTWARE INTERRUPTS (SOFTIRQs / TASKLETS)
+# For deferred, non-critical interrupt work (bottom halves)
+# Replaces Linux kernel/softirq.c
+# ============================================================
+𒀸 ⚡ [SOFTIRQ_MGR]
+WORKQUEUE_INIT
+"[IRQ] Deferred workqueue initialized." 𐡐
+
+# Register standard softirq handlers
+"NET_RX_SOFTIRQ" STACK_PUSH
+"NET_TX_SOFTIRQ" STACK_PUSH
+"BLOCK_IO_SOFTIRQ" STACK_PUSH
+"TASKLET_SOFTIRQ" STACK_PUSH
+"[IRQ] SoftIRQ subsystem online: NET_RX | NET_TX | BLOCK_IO" 𐡐
+
+# ============================================================
+# 3. GLOBAL INTERRUPT CONTROL
+# Enable processor interrupts (STI)
+# ============================================================
+𒀸 ⚡ [IRQ_ENABLE_ALL]
+IRQ_ENABLE_GLOBAL
+"[IRQ] x86 STI executing. Processor accepting hardware interrupts." 𐡐
+
+# ============================================================
+# 4. INTERRUPT DOMAIN SEAL
+# ============================================================
+𒀸 ⚡ [IRQ_SEAL]
+"" 𐡐
+"[IRQ] =============================================" 𐡐
+"[IRQ] Interrupt sovereign layer COMPLETE" 𐡐
+"[IRQ] Top Halves (Hard IRQs): 5 vectors pinned" 𐡐
+"[IRQ] Bottom Halves (SoftIRQs): Workqueue ACTIVE" 𐡐
+"[IRQ] Processor STI: ENABLED" 𐡐
+"[IRQ] =============================================" 𐡐
+
+COMMIT_STATE
+𐡕

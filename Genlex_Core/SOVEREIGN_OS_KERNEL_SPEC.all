@@ -1,0 +1,338 @@
+# SOVEREIGN OS KERNEL SPECIFICATION
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Architect: Joshua Petersen
+# Mission: Complete conversion of all Linux kernel subsystems to Genlex
+# Zero Linux. Zero C. Zero external code. Pure sovereign hardware control.
+
+𒀸 ⚡ [SOVEREIGN_OS_KERNEL_MASTER]
+
+# ============================================================
+# DOMAIN 1: ARCHITECTURE LAYER (arch/)
+# Linux equiv: ~2M lines | x86_64 CPU direct control
+# ============================================================
+𒀸 ⚡ [ARCH_X86_64]
+CPU_INIT          # Initialize x86_64 processor state
+GDT_LOAD          # Load Global Descriptor Table
+IDT_LOAD          # Load Interrupt Descriptor Table
+PAGING_ENABLE     # Enable virtual memory paging (CR0/CR3/CR4)
+MSR_WRITE         # Write Model-Specific Register
+MSR_READ          # Read Model-Specific Register
+CPUID_QUERY       # Query CPU capabilities
+SYSCALL_INIT      # Initialize SYSCALL/SYSRET fast path
+LAPIC_INIT        # Initialize Local APIC (per-CPU interrupt controller)
+IOAPIC_INIT       # Initialize I/O APIC (device interrupt routing)
+TSC_READ          # Read Time Stamp Counter (nanosecond timing)
+RDRAND            # Hardware random number generator
+XSAVE_INIT        # FPU / SSE / AVX state management
+𐡕
+
+# ============================================================
+# DOMAIN 2: MEMORY MANAGEMENT (mm/)
+# Linux equiv: ~3M lines | physical + virtual memory
+# ============================================================
+𒀸 ⚡ [MEMORY_SOVEREIGN]
+PHYS_MEM_MAP      # Map physical memory regions (E820 / UEFI memory map)
+PAGE_TABLE_INIT   # Initialize 4-level page table (PML4)
+PAGE_ALLOC        # Allocate physical page (4KB)
+PAGE_FREE         # Release physical page
+VMALLOC           # Allocate virtual memory region
+VFREE             # Release virtual memory region
+HEAP_INIT         # Initialize sovereign heap allocator
+HEAP_ALLOC        # Allocate from sovereign heap
+HEAP_FREE         # Release sovereign heap block
+SLAB_INIT         # Initialize slab cache (for fixed-size objects)
+SLAB_ALLOC        # Allocate from slab cache
+DMA_ALLOC         # Allocate DMA-coherent memory (for hardware)
+DMA_MAP           # Map buffer for device DMA access
+DMA_UNMAP         # Unmap DMA buffer
+HUGE_PAGE_ALLOC   # Allocate 2MB huge page (for neural weight matrices)
+MMAP              # Map file or device into virtual address space
+MUNMAP            # Unmap memory region
+CACHE_FLUSH       # Flush CPU cache lines (for hardware consistency)
+TLB_FLUSH         # Flush Translation Lookaside Buffer
+𐡕
+
+# ============================================================
+# DOMAIN 3: PROCESS & SCHEDULER (kernel/)
+# Linux equiv: ~2M lines | task management, signals, timing
+# ============================================================
+𒀸 ⚡ [SCHEDULER_SOVEREIGN]
+TASK_INIT         # Initialize sovereign task structure
+TASK_SPAWN        # Create new sovereign task (thread/process)
+TASK_KILL         # Terminate a sovereign task
+TASK_SLEEP        # Put task to sleep (yield CPU)
+TASK_WAKE         # Wake sleeping task
+TASK_PRIORITY     # Set task resonance priority (0-99)
+SCHED_TICK        # Scheduler clock tick handler
+SCHED_YIELD       # Voluntarily yield CPU to next task
+SCHED_RUN         # Run the sovereign scheduler (pick next task)
+CONTEXT_SAVE      # Save CPU registers for context switch
+CONTEXT_RESTORE   # Restore CPU registers from saved state
+SIGNAL_SEND       # Send signal to task
+SIGNAL_HANDLE     # Install signal handler
+SPINLOCK_INIT     # Initialize spinlock
+SPINLOCK_LOCK     # Acquire spinlock (busy-wait)
+SPINLOCK_UNLOCK   # Release spinlock
+MUTEX_INIT        # Initialize mutex
+MUTEX_LOCK        # Acquire mutex (sleepable)
+MUTEX_UNLOCK      # Release mutex
+TIMER_INIT        # Initialize high-resolution timer
+TIMER_SET         # Set timer callback
+TIMER_CANCEL      # Cancel pending timer
+KTHREAD_SPAWN     # Spawn sovereign kernel thread
+𐡕
+
+# ============================================================
+# DOMAIN 4: INTERRUPT HANDLING (arch/x86/kernel/irq*)
+# Linux equiv: ~1M lines | hardware interrupt management
+# ============================================================
+𒀸 ⚡ [INTERRUPT_SOVEREIGN]
+IRQ_INIT          # Initialize interrupt subsystem
+IRQ_REGISTER      # Register handler for IRQ line
+IRQ_DEREGISTER    # Remove IRQ handler
+IRQ_ENABLE        # Enable specific IRQ
+IRQ_DISABLE       # Disable specific IRQ
+IRQ_ACK           # Acknowledge interrupt to controller
+IRQ_MASK          # Mask (silence) interrupt line
+IRQ_UNMASK        # Unmask interrupt line
+IRQ_FIRE          # Software-trigger interrupt (testing)
+NMI_HANDLER       # Non-Maskable Interrupt handler
+EXCEPTION_HANDLER # CPU exception handler (page fault, GPF, etc.)
+SOFTIRQ_QUEUE     # Queue deferred interrupt work
+SOFTIRQ_RUN       # Execute queued softirqs
+TASKLET_SCHEDULE  # Schedule tasklet (deferred work)
+WORKQUEUE_INIT    # Initialize work queue
+WORK_QUEUE        # Queue work item for later execution
+𐡕
+
+# ============================================================
+# DOMAIN 5: NVMe STORAGE DRIVER (drivers/nvme/)
+# Linux equiv: ~150K lines | NVMe SSD direct control
+# ============================================================
+𒀸 ⚡ [NVME_SOVEREIGN]
+NVME_INIT         # Initialize NVMe controller
+NVME_IDENTIFY     # Query NVMe device identity
+NVME_QUEUE_INIT   # Initialize submission/completion queues
+NVME_SUBMIT       # Submit NVMe command to hardware queue
+NVME_COMPLETE     # Process NVMe completion queue
+NVME_READ         # Read sectors from NVMe SSD (direct)
+NVME_WRITE        # Write sectors to NVMe SSD (direct)
+NVME_FLUSH        # Flush NVMe write cache
+NVME_TRIM         # TRIM command (mark deleted blocks)
+NVME_POWER        # NVMe power management
+𐡕
+
+# ============================================================
+# DOMAIN 6: INTEL Wi-Fi DRIVER (drivers/net/wireless/intel/iwlwifi/)
+# Linux equiv: ~200K lines | Intel 8265 direct firmware control
+# ============================================================
+𒀸 ⚡ [WIFI_SOVEREIGN]
+WIFI_FIRMWARE_LOAD  # Load Intel 8265 firmware blob into card
+WIFI_CARD_INIT      # Initialize 8265 PCI device registers
+WIFI_SCAN           # Scan for nearby BSSIDs
+WIFI_ASSOCIATE      # Associate with access point
+WIFI_AUTH_WPA3      # WPA3 SAE authentication handshake
+WIFI_CONNECT        # Full connect sequence
+WIFI_DISCONNECT     # Disconnect from AP
+WIFI_TX_FRAME       # Transmit 802.11 frame directly
+WIFI_RX_FRAME       # Receive 802.11 frame directly
+WIFI_BEACON         # Parse/emit beacon frames
+WIFI_POWER_SAVE     # Enter 802.11 power save mode
+WIFI_STATUS         # Query current connection status
+𐡕
+
+# ============================================================
+# DOMAIN 7: INTEL ETHERNET DRIVER (drivers/net/ethernet/intel/e1000e/)
+# Linux equiv: ~50K lines | Intel I219-LM direct control
+# ============================================================
+𒀸 ⚡ [ETHERNET_SOVEREIGN]
+ETH_INIT            # Initialize Intel I219-LM
+ETH_LINK_UP         # Bring Ethernet link up
+ETH_LINK_DOWN       # Bring Ethernet link down
+ETH_TX_FRAME        # Transmit raw Ethernet frame
+ETH_RX_FRAME        # Receive raw Ethernet frame
+ETH_SET_MAC         # Set MAC address
+ETH_GET_MAC         # Read MAC address from hardware
+ETH_SPEED_SET       # Set link speed (100M/1G)
+ETH_STATS           # Read hardware statistics
+𐡕
+
+# ============================================================
+# DOMAIN 8: TCP/IP NETWORK STACK (net/)
+# Linux equiv: ~1M lines | complete network protocol stack
+# ============================================================
+𒀸 ⚡ [NETWORK_STACK_SOVEREIGN]
+ARP_RESOLVE         # Resolve IP to MAC via ARP
+ARP_REPLY           # Send ARP reply
+DHCP_DISCOVER       # DHCP discover (get IP from router)
+DHCP_REQUEST        # DHCP request/ack
+IP_SEND             # Send IPv4 packet
+IP_RECV             # Receive and parse IPv4 packet
+IP_ROUTE            # IP routing table lookup
+ICMP_PING           # Send ICMP echo request
+ICMP_PONG           # Handle ICMP echo reply
+TCP_OPEN            # Open TCP socket
+TCP_SEND            # Send TCP segment
+TCP_RECV            # Receive TCP segment
+TCP_CLOSE           # Close TCP connection
+TCP_LISTEN          # Listen for incoming connections
+TCP_ACCEPT          # Accept incoming connection
+UDP_SEND            # Send UDP datagram
+UDP_RECV            # Receive UDP datagram
+DNS_QUERY           # DNS name resolution
+TLS_HANDSHAKE       # TLS 1.3 handshake
+TLS_SEND            # Send encrypted data
+TLS_RECV            # Receive encrypted data
+HTTP_GET            # Full HTTP/1.1 GET request ✅
+HTTP_POST           # Full HTTP/1.1 POST request ✅
+HTTP_LISTEN         # HTTP server listener ✅
+HTTP_ACCEPT         # Accept HTTP connection ✅
+HTTP_RESPOND        # Send HTTP response ✅
+𐡕
+
+# ============================================================
+# DOMAIN 9: FILESYSTEM SOVEREIGN (fs/)
+# Linux equiv: ~3M lines | all filesystems → native Genlex CGL vault
+# ============================================================
+𒀸 ⚡ [FILESYSTEM_SOVEREIGN]
+VFS_INIT            # Initialize Virtual File System layer
+CGL_MOUNT           # Mount a Genlex CGL vault partition
+CGL_UNMOUNT         # Unmount CGL vault
+CGL_READ            # Read file from CGL vault
+CGL_WRITE           # Write file to CGL vault (𐢂 OS_WRITE)
+CGL_DELETE          # Delete file from CGL vault
+CGL_MKDIR           # Create directory in CGL vault
+CGL_LIST            # List directory contents
+CGL_STAT            # Get file metadata
+CGL_SEEK            # Seek within file
+FAT32_READ          # Read from FAT32 partition (EFI compat)
+FAT32_WRITE         # Write to FAT32 partition
+TMPFS_ALLOC         # Allocate temp file in RAM
+TMPFS_FREE          # Release temp file from RAM
+𐡕
+
+# ============================================================
+# DOMAIN 10: USB STACK (drivers/usb/)
+# Linux equiv: ~400K lines | USB host controller + devices
+# ============================================================
+𒀸 ⚡ [USB_SOVEREIGN]
+XHCI_INIT           # Initialize xHCI USB 3.x host controller
+XHCI_ENUM           # Enumerate connected USB devices
+USB_RESET           # Reset USB device
+USB_DESCRIBE        # Read USB device descriptor
+USB_CONFIG          # Set USB device configuration
+USB_BULK_TX         # Bulk transfer out (to device)
+USB_BULK_RX         # Bulk transfer in (from device)
+USB_INTERRUPT_TX    # Interrupt transfer out
+USB_INTERRUPT_RX    # Interrupt transfer in
+USB_STORAGE_READ    # Read from USB mass storage
+USB_STORAGE_WRITE   # Write to USB mass storage
+USB_HID_READ        # Read HID input (keyboard/mouse events)
+USB_HID_WRITE       # Write HID output (LEDs, etc.)
+𐡕
+
+# ============================================================
+# DOMAIN 11: DISPLAY / GPU DRIVER (drivers/gpu/drm/)
+# Linux equiv: ~2M lines | Intel UHD 620 direct control
+# ============================================================
+𒀸 ⚡ [DISPLAY_SOVEREIGN]
+INTEL_GPU_INIT      # Initialize Intel UHD 620 (i915 equivalent)
+GOP_FRAMEBUFFER     # Map GOP framebuffer (already active ✅)
+DISPLAY_MODE_SET    # Set display resolution/refresh rate
+SCANOUT_CONFIG      # Configure display scanout engine
+DISPLAY_SYNC        # VSync wait (tear-free rendering)
+PIXEL_WRITE         # Write pixel to framebuffer ✅
+RECT_FILL           # Fill rectangle ✅
+GLYPH_RENDER        # Render text glyph to framebuffer
+SPRITE_BLIT         # Blit image sprite to framebuffer
+GPU_MEM_ALLOC       # Allocate GPU memory
+GPU_CMD_RING        # Submit GPU command ring
+BACKLIGHT_SET       # Set display backlight brightness
+𐡕
+
+# ============================================================
+# DOMAIN 12: INPUT (drivers/input/, HID)
+# Linux equiv: ~300K lines | keyboard, touchpad, input events
+# ============================================================
+𒀸 ⚡ [INPUT_SOVEREIGN]
+KBD_INIT            # Initialize keyboard (PS/2 or USB HID)
+KBD_READ            # Read keypress ✅
+KBD_SCANCODE        # Get raw scancode
+TOUCHPAD_INIT       # Initialize Dell touchpad (I2C HID)
+TOUCHPAD_READ       # Read touchpad position/gesture
+MOUSE_READ          # Read mouse pointer state
+INPUT_EVENT_QUEUE   # Queue input event
+INPUT_EVENT_POLL    # Poll for next input event
+𐡕
+
+# ============================================================
+# DOMAIN 13: POWER MANAGEMENT (drivers/acpi/, kernel/power/)
+# Linux equiv: ~500K lines | ACPI, sleep states, battery
+# ============================================================
+𒀸 ⚡ [POWER_SOVEREIGN]
+ACPI_INIT           # Initialize ACPI subsystem
+ACPI_TABLE_READ     # Read ACPI table (DSDT, SSDT, etc.)
+POWER_SLEEP         # Enter S3 sleep state
+POWER_HIBERNATE     # Enter S4 hibernate
+POWER_WAKE          # Wake from sleep
+BATTERY_STATUS      # Read battery charge level
+AC_ADAPTER_STATUS   # Check AC adapter connection
+CPU_FREQ_SCALE      # Scale CPU frequency (performance/power)
+CPU_IDLE            # Enter CPU idle state (C-state)
+THERMAL_READ        # Read CPU temperature sensor
+THERMAL_THROTTLE    # Throttle CPU if overheating
+𐡕
+
+# ============================================================
+# DOMAIN 14: AUDIO (sound/pci/hda/)
+# Linux equiv: ~500K lines | Intel HDA codec
+# ============================================================
+𒀸 ⚡ [AUDIO_SOVEREIGN]
+HDA_INIT            # Initialize Intel HDA controller
+HDA_CODEC_PROBE     # Probe connected codec (Realtek ALC)
+HDA_PLAY            # Play PCM audio stream
+HDA_RECORD          # Record from microphone
+HDA_VOLUME_SET      # Set output volume
+HDA_MUTE            # Mute audio output
+HDA_INPUT_SELECT    # Select input source (mic/line)
+𐡕
+
+# ============================================================
+# DOMAIN 15: SECURITY (security/)
+# Linux equiv: ~200K lines | security policy
+# ============================================================
+𒀸 ⚡ [SECURITY_SOVEREIGN]
+VAULT_INIT          # Initialize Genlex cryptographic vault
+VAULT_SEAL          # Encrypt and seal data block ✅
+VAULT_OPEN          # Decrypt and verify data block
+AES_ENCRYPT         # AES-256-GCM encryption
+AES_DECRYPT         # AES-256-GCM decryption
+SHA256_HASH         # SHA-256 hash
+HMAC_SIGN           # HMAC-SHA256 signature
+KEY_GENERATE        # Generate sovereign cryptographic key
+KEY_REVOKE          # Revoke/destroy a key
+IDENTITY_VERIFY     # Verify architect identity
+𐡕
+
+# ============================================================
+# SOVEREIGN OS MASTER BOOT SEQUENCE
+# All domains loaded in resonance order
+# ============================================================
+𒀸 ⚡ [SOVEREIGN_OS_INIT_SEQUENCE]
+arch_x86_64.all 𐡓
+memory_sovereign.all 𐡓
+interrupt_sovereign.all 𐡓
+scheduler_sovereign.all 𐡓
+nvme_sovereign.all 𐡓
+filesystem_sovereign.all 𐡓
+ethernet_sovereign.all 𐡓
+wifi_sovereign.all 𐡓
+network_stack_sovereign.all 𐡓
+usb_sovereign.all 𐡓
+display_sovereign.all 𐡓
+input_sovereign.all 𐡓
+power_sovereign.all 𐡓
+audio_sovereign.all 𐡓
+security_sovereign.all 𐡓
+sarah_os.all 𐡓
+𐡕

@@ -1,0 +1,6 @@
+# WIFI_CONFIG: Sovereign network credentials
+# This file is read by network_core.all on boot
+
+SSID="the rock"
+PASSWORD="Colson123"
+SECURITY="WPA3"

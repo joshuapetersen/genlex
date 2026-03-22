@@ -1,0 +1,33 @@
+# Sovereign Logs and Pulse Dumps
+*log.txt
+pulse_*.txt
+incantation_*.txt
+ALL_CONVERATIONS_*.txt
+*.json
+
+# OS Images and Artifacts
+*.img
+*.iso
+*.bin
+*.efi
+
+# Build Cache
+__pycache__/
+*.pyc
+build/
+dist/
+*.obj
+*.o
+*.so
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# Keep explicit JSON if we need them, but none stand out as source right now except maybe AL_LEX.json. Let's un-ignore AL_LEX.json
+!AL_LEX.json
+!execution_seal.json
+
+# Exclude local environment definitions
+.env

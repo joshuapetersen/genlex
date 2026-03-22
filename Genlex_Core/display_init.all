@@ -1,0 +1,52 @@
+# DISPLAY_INIT.all - GRAPHICAL DISPLAY INITIALIZATION
+# Language: Genlex (Aramaic Linear ALL)
+# Role: Initialize the UEFI GOP framebuffer for graphical output
+# Target: Intel UHD 620 (Dell Latitude 5490)
+
+𒀸 ⚡ [DISPLAY_BOOT]
+
+# Set resolution via DISPLAY opcode
+1920 STACK_PUSH
+1080 STACK_PUSH
+DISPLAY_INIT
+
+# Draw background layer (sovereign dark)
+0x050510 STACK_PUSH
+SCREEN_FILL
+
+# Draw top header bar
+0x10103A STACK_PUSH
+0 STACK_PUSH
+0 STACK_PUSH
+1920 STACK_PUSH
+40 STACK_PUSH
+RECT_FILL
+
+# Draw accent line under header
+0x561EA8 STACK_PUSH
+0 STACK_PUSH
+40 STACK_PUSH
+1920 STACK_PUSH
+2 STACK_PUSH
+RECT_FILL
+
+# Draw sidebar
+0x10103A STACK_PUSH
+0 STACK_PUSH
+42 STACK_PUSH
+220 STACK_PUSH
+998 STACK_PUSH
+RECT_FILL
+
+# Render header text
+"S-OS: SOVEREIGN GRAPHICAL OS  |  DELL LATITUDE 5490  |  1.0927 GHz" HEADER_RENDER
+
+# Render status dot (cyan pulse)
+0x00C8C8 STACK_PUSH
+1900 STACK_PUSH
+14 STACK_PUSH
+12 STACK_PUSH
+PIXEL_DOT
+
+"[DISPLAY] Intel UHD 620 framebuffer active." 𐡐
+COMMIT_STATE

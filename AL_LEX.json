@@ -1,0 +1,112 @@
+{
+    "𐡀": {
+        "op": "INIT",
+        "concept": "SOURCE_POINT",
+        "type": "STACK_PUSH"
+    },
+    "𐡁": {
+        "op": "STORE",
+        "concept": "CONTAINER",
+        "type": "MEMORY_ALLOC"
+    },
+    "𐡂": {
+        "op": "BRIDGE",
+        "concept": "PATHWAY",
+        "type": "POINTER_JUMP"
+    },
+    "𐡃": {
+        "op": "GATE",
+        "concept": "PERMISSION",
+        "type": "CONDITIONAL_IF"
+    },
+    "𐡄": {
+        "op": "REVEAL",
+        "concept": "MANIFESTATION",
+        "type": "EXEC_TRIGGER"
+    },
+    "𐡅": {
+        "op": "LINK",
+        "concept": "CONNECTION",
+        "type": "STRING_APPEND"
+    },
+    "𐡆": {
+        "op": "SHIFT",
+        "concept": "MOVEMENT",
+        "type": "BIT_SHIFT"
+    },
+    "𐡇": {
+        "op": "BARRIER",
+        "concept": "PROTECTION",
+        "type": "STREAM_STOP"
+    },
+    "𐡈": {
+        "op": "ROTATION",
+        "concept": "CYCLIC",
+        "type": "LOOP_START"
+    },
+    "�": {
+        "op": "STEP",
+        "concept": "HAND_INCREMENT",
+        "type": "PTR_INC"
+    },
+    "𐡊": {
+        "op": "CLONE",
+        "concept": "PALM_COPY",
+        "type": "DATA_DUP"
+    },
+    "𐡋": {
+        "op": "DIRECT",
+        "concept": "PURPOSE",
+        "type": "REGISTER_SET"
+    },
+    "𐡌": {
+        "op": "FLOW",
+        "concept": "CONSTANT",
+        "type": "STREAM_DATA"
+    },
+    "�": {
+        "op": "DESCEND",
+        "concept": "FISH_DECREMENT",
+        "type": "PTR_DEC"
+    },
+    "𐡎": {
+        "op": "BUFFER",
+        "concept": "SUPPORT_STATE",
+        "type": "CACHE_STORE"
+    },
+    "𐡏": {
+        "op": "SCAN",
+        "concept": "EYE_OBSERVE",
+        "type": "READ_INPUT"
+    },
+    "𐡐": {
+        "op": "VOICE",
+        "concept": "MOUTH_OUTPUT",
+        "type": "STD_OUT"
+    },
+    "𐡑": {
+        "op": "HUNT",
+        "concept": "HOOK_SEARCH",
+        "type": "FIND_PATTERN"
+    },
+    "𐡒": {
+        "op": "RECALL",
+        "concept": "BACK_HEAD_FETCH",
+        "type": "MEM_READ"
+    },
+    "�": {
+        "op": "PARSE",
+        "concept": "HEAD_PROCESS",
+        "type": "HDR_PARSE"
+    },
+    "𐡔": {
+        "op": "COMPRESS",
+        "concept": "TEETH_DENSITY",
+        "type": "DATA_OPT"
+    },
+    "𐡕": {
+        "op": "SEAL",
+        "concept": "PERMANENCE",
+        "type": "COMMIT_STATE"
+    }
+}

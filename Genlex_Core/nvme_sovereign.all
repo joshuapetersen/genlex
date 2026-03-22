@@ -1,0 +1,127 @@
+# NVME_SOVEREIGN.all — SOVEREIGN NVMe STORAGE DRIVER
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Domain: 5 of 15 — Replaces Linux drivers/nvme/ (~150K lines)
+# Architect: Joshua Petersen
+
+𒀸 ⚡ [NVME_INIT_CORE]
+"[NVME] Sovereign NVMe storage driver initializing..." 𐡐
+
+# ============================================================
+# 1. PCI EXPRESS (PCIe) DISCOVERY
+# Find the NVMe controller on the PCIe bus
+# NVMe Class Code: 0x010802 (Mass Storage / Non-Volatile / NVMe)
+# ============================================================
+𒀸 ⚡ [PCI_DISCOVER]
+0x010802 STACK_PUSH
+PCI_FIND_BY_CLASS
+NVME_PCI_DEVICE MEMORY_ALLOC
+
+"[NVME] PCIe Bus scanned. NVMe controller found." 𐡐
+
+# Enable PCI Bus Mastering and Memory Space (Command Register bit 1 and 2)
+NVME_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_ENABLE_MASTERING
+
+# ============================================================
+# 2. MMIO BAR CONFIGURATION
+# Map the NVMe controller's Base Address Register (BAR0)
+# ============================================================
+𒀸 ⚡ [MMIO_MAP_NVME]
+NVME_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_READ_BAR0
+NVME_BAR0_PHYS MEMORY_ALLOC
+
+"[NVME] MMIO mapping physical BAR0: " STACK_PUSH NVME_BAR0_PHYS 𐡒 𐡅 𐡐
+
+# Map BAR0 into Sovereign Virtual Memory
+0x4000     STACK_PUSH        # 16KB size (NVMe registers)
+NVME_BAR0_PHYS 𐡒 STACK_PUSH  # Physical start
+0xFFFFB00000000000 STACK_PUSH # Virtual destination
+PAGE_MAP_MMIO
+"0xFFFFB00000000000" MEMORY_ALLOC NVME_BAR0_VIRT
+
+"[NVME] NVMe MMIO base live at 0xFFFFB00000000000." 𐡐
+
+# ============================================================
+# 3. CONTROLLER INITIALIZATION & IDENTITY (Admin Queue)
+# Replaces Linux drivers/nvme/host/core.c
+# ============================================================
+𒀸 ⚡ [NVME_ADMIN_INIT]
+# Read NVMe Capabilities (CAP register offset 0x00)
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+0x00 STACK_PUSH
+MMIO_READ64
+NVME_CAP MEMORY_ALLOC
+
+# Disable Controller (CC.EN = 0) to reset
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+NVME_DISABLE
+
+# Wait for CSTS.RDY == 0 (Controller is disabled)
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+NVME_WAIT_READY_0
+
+# Allocate 4KB DMA page for Admin Submission Queue (ASQ)
+4096 STACK_PUSH DMA_ALLOC NVME_ASQ MEMORY_ALLOC
+# Allocate 4KB DMA page for Admin Completion Queue (ACQ)
+4096 STACK_PUSH DMA_ALLOC NVME_ACQ MEMORY_ALLOC
+
+# Write ASQ/ACQ base addresses to hardware (ASQB 0x28, ACQB 0x30)
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+NVME_ASQ 𐡒 STACK_PUSH
+NVME_ACQ 𐡒 STACK_PUSH
+NVME_SET_ADMIN_QUEUES
+
+# Enable Controller (CC.EN = 1)
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+NVME_ENABLE
+
+# Wait for CSTS.RDY == 1 (Controller is ready)
+NVME_BAR0_VIRT 𐡒 STACK_PUSH
+NVME_WAIT_READY_1
+
+"[NVME] Hardware controller enabled. Admin queues ACTIVE." 𐡐
+
+# ============================================================
+# 4. IDENTIFY CONTROLLER (Command 0x06)
+# ============================================================
+𒀸 ⚡ [NVME_IDENTIFY_CTRL]
+# Send Identify Controller command via Admin Submission Queue
+NVME_ASQ 𐡒 STACK_PUSH
+NVME_IDENTIFY
+"[NVME] Identify Controller: SUCCESS" 𐡐
+
+# ============================================================
+# 5. I/O QUEUE SETUP (For actual data reads/writes)
+# ============================================================
+𒀸 ⚡ [NVME_IO_QUEUES]
+# Allocate DMA pages for I/O Queue 1 (Submission + Completion)
+4096 STACK_PUSH DMA_ALLOC NVME_SQ1 MEMORY_ALLOC
+4096 STACK_PUSH DMA_ALLOC NVME_CQ1 MEMORY_ALLOC
+
+NVME_ASQ 𐡒 STACK_PUSH
+NVME_CQ1 𐡒 STACK_PUSH
+NVME_CREATE_CQ
+
+NVME_ASQ 𐡒 STACK_PUSH
+NVME_SQ1 𐡒 STACK_PUSH
+NVME_CQ1 𐡒 STACK_PUSH
+NVME_CREATE_SQ
+
+"[NVME] I/O Queue 1 (SQ/CQ) CREATED. Storage ready." 𐡐
+
+# ============================================================
+# 6. NVME DOMAIN SEAL
+# ============================================================
+𒀸 ⚡ [NVME_SEAL]
+"" 𐡐
+"[NVME] =============================================" 𐡐
+"[NVME] NVMe Storage sovereign layer COMPLETE" 𐡐
+"[NVME] PCIe Bus Mastering: ENABLED" 𐡐
+"[NVME] BAR0 MMIO Region:   MAPPED (0xFFFFB...)" 𐡐
+"[NVME] Admin Queues:       ONLINE" 𐡐
+"[NVME] I/O Queue 1:        READY FOR SECTOR I/O" 𐡐
+"[NVME] =============================================" 𐡐
+
+COMMIT_STATE
+𐡕

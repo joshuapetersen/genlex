@@ -1,0 +1,31 @@
+# NEURAL_BRIDGE.all - 8B WEIGHT ACTIVATION MODULE
+# Language: Genlex (Aramaic Linear ALL)
+# Role: Bridge between Genlex OS and the 8B GGUF neural weights
+# Weight File: neural_8b_weights.cgl
+
+𒀸 ⚡ [NEURAL_LOAD]
+"[NEURAL] Loading 8B Weight Substrate..." 𐡐
+
+# Load the GGUF weights into the GSK stack
+"neural_8b_weights.cgl" WEIGHT_LOAD
+
+# Verify load
+WEIGHT_STATUS 𐡒
+WEIGHT_STATUS_TEXT MEMORY_ALLOC
+
+"[NEURAL] Weight Status: " STACK_PUSH
+WEIGHT_STATUS_TEXT 𐡒
+𐡅
+𐡐
+
+COMMIT_STATE
+
+# --- NEURAL_PULSE OPCODE DEFINITION ---
+# Called by aeris_chat.all when user sends input
+𒀸 ⚡ [NEURAL_PULSE_DEF]
+PROMPT 𐡒                         # Pop prompt from stack
+"llama3_8b_architecture.all" 𐡓   # Load architecture
+PROMPT 𐡒                         # Re-push prompt
+RUN_INFERENCE                     # Execute 8B forward pass
+NEURAL_RESPONSE MEMORY_ALLOC      # Store the result
+𐡕

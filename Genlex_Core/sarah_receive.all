@@ -1,0 +1,57 @@
+# SARAH_RECEIVE.all - Sovereign Code-Push Receiver
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Role: HTTP server that listens for .all script pushes
+# from the Windows development machine on port 5490
+# Connection: Ethernet (Intel I219-LM) or USB-C tether
+
+𒀸 ⚡ [CODE_PUSH_SERVER_INIT]
+"[PUSH] Sovereign code-push receiver starting..." 𐡐
+"[PUSH] Listening on: 192.168.5.49:5490" 𐡐
+"[PUSH] Connect via: Ethernet or USB-C from Windows machine" 𐡐
+
+# Set static IP for the sovereign node
+"192.168.5.49" STACK_PUSH
+STATIC_IP MEMORY_ALLOC
+
+# Start HTTP listener
+5490 STACK_PUSH
+HTTP_LISTEN_START
+
+"[PUSH] Ready. Run push_to_sarah.ps1 on Windows to push scripts." 𐡐
+COMMIT_STATE
+
+# ============================================================
+# RECEIVE LOOP — waits for incoming .all files
+# ============================================================
+𒀸 ⚡ [RECEIVE_LOOP]
+HTTP_ACCEPT                       # blocks until connection arrives
+HTTP_REQUEST_BODY 𐡒
+REQUEST_DATA MEMORY_ALLOC
+
+# Extract filename and content from JSON body
+REQUEST_DATA 𐡒
+JSON_PARSE
+PUSHED_FILENAME 𐡒
+PUSHED_CONTENT 𐡒
+
+# Write the received script to the Genlex core partition
+PUSHED_FILENAME 𐡒
+PUSHED_CONTENT 𐡒
+𐢂                                # OS_WRITE — writes file to /genlex/
+
+"[PUSH] Script received: " STACK_PUSH
+PUSHED_FILENAME 𐡒
+𐡅
+𐡐
+
+# Send 200 OK response
+"SARAH_OK" STACK_PUSH
+HTTP_RESPOND
+
+# Hot-reload: execute the new script immediately
+PUSHED_FILENAME 𐡒
+𐡓                                # PARSE — load & run the new script
+
+# Loop back
+"RECEIVE_LOOP" 𐡂
+𐡕

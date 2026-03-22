@@ -1,0 +1,85 @@
+# DESKTOP_SOVEREIGN.all — SOVEREIGN GUI COMPOSITOR
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Phase: 3 (The Sovereign GUI)
+# Architect: Joshua Petersen
+
+𒀸 ⚡ [GUI_INIT_COMPOSITOR]
+"[GUI] Sovereign Desktop Compositor initializing..." 𐡐
+
+# ============================================================
+# 1. FRAMEBUFFER CLEAR (Draw the Desktop Background)
+# The Screen was initialized to 1920x1080 in Domain 11 (GPU)
+# ============================================================
+𒀸 ⚡ [DRAW_BACKGROUND]
+# Clear the 1920x1080 screen to Pitch Black (The Sovereign Void)
+0    STACK_PUSH  # R
+0    STACK_PUSH  # G
+0    STACK_PUSH  # B
+GUI_CLEAR_SCREEN
+
+"[GUI] Screen cleared to Sovereign Void (Black)." 𐡐
+
+# ============================================================
+# 2. DRAW THE TASKBAR (Bottom 40 pixels)
+# ============================================================
+𒀸 ⚡ [DRAW_TASKBAR]
+0    STACK_PUSH  # X Start
+1040 STACK_PUSH  # Y Start (1080 - 40)
+1920 STACK_PUSH  # Width
+40   STACK_PUSH  # Height
+5    STACK_PUSH  # R
+5    STACK_PUSH  # G
+5    STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Draw a 2-pixel glowing Sovereign Cyan accent line at the top of the taskbar
+0    STACK_PUSH  # X
+1040 STACK_PUSH  # Y
+1920 STACK_PUSH  # Width
+2    STACK_PUSH  # Height
+0    STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+"[GUI] Base Taskbar rendered (Y: 1040 to 1080)." 𐡐
+
+# ============================================================
+# 3. DRAW THE "START" BUTTON (The AERIS Root Menu)
+# ============================================================
+𒀸 ⚡ [DRAW_START_MENU_BUTTON]
+# Draw a hollow glowing cyan outline for the button
+10   STACK_PUSH  # X
+1045 STACK_PUSH  # Y
+80   STACK_PUSH  # Width
+30   STACK_PUSH  # Height
+0    STACK_PUSH  # R
+200  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Write "SARAH" text inside the button in high-contrast white
+22   STACK_PUSH  # X offset
+1052 STACK_PUSH  # Y offset
+"SARAH" STACK_PUSH
+255  STACK_PUSH  # Text R
+255  STACK_PUSH  # Text G
+255  STACK_PUSH  # Text B
+GUI_DRAW_TEXT
+
+"[GUI] SARAH Root Menu button rendered." 𐡐
+
+# ============================================================
+# 4. GUI COMPOSITOR SEAL
+# ============================================================
+𒀸 ⚡ [GUI_SEAL]
+"" 𐡐
+"[GUI] =============================================" 𐡐
+"[GUI] Desktop Compositor layer COMPLETE" 𐡐
+"[GUI] Resolution Repaint: 1920x1080 (32 bpp)" 𐡐
+"[GUI] Background:         Deep Sovereign Blue" 𐡐
+"[GUI] Taskbar:            Active" 𐡐
+"[GUI] =============================================" 𐡐
+
+COMMIT_STATE
+𐡕

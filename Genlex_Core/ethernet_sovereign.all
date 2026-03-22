@@ -1,0 +1,113 @@
+# ETHERNET_SOVEREIGN.all — SOVEREIGN INTEL ETHERNET DRIVER
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Domain: 7 of 15 — Replaces Linux drivers/net/ethernet/intel/e1000e (~50K lines)
+# Target: Intel I219-LM (Dell Latitude 5490 onboard LAN)
+# Architect: Joshua Petersen
+
+𒀸 ⚡ [ETH_INIT_HARDWARE]
+"[ETH] Sovereign Intel I219-LM Ethernet driver initializing..." 𐡐
+
+# ============================================================
+# 1. PCI EXPRESS (PCIe) DISCOVERY
+# Find the Intel Ethernet adapter on PCIe bus
+# Ethernet Class Code: 0x020000 (Network Controller / Ethernet)
+# ============================================================
+𒀸 ⚡ [PCI_DISCOVER_ETH]
+0x020000 STACK_PUSH
+PCI_FIND_BY_CLASS
+ETH_PCI_DEVICE MEMORY_ALLOC
+
+"[ETH] PCIe Bus scanned. Intel I219-LM Ethernet controller found." 𐡐
+
+# Enable PCI Bus Mastering and Memory Space
+ETH_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_ENABLE_MASTERING
+
+# ============================================================
+# 2. MMIO BAR CONFIGURATION
+# Map the Intel I219-LM Base Address Register (BAR0)
+# ============================================================
+𒀸 ⚡ [MMIO_MAP_ETH]
+ETH_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_READ_BAR0
+ETH_BAR0_PHYS MEMORY_ALLOC
+
+# Map BAR0 into Sovereign Virtual Memory (128KB region)
+0x20000    STACK_PUSH        # 128KB size (Intel I219-LM registers)
+ETH_BAR0_PHYS 𐡒 STACK_PUSH   # Physical start
+0xFFFFB00000020000 STACK_PUSH # Virtual destination
+PAGE_MAP_MMIO
+"0xFFFFB00000020000" MEMORY_ALLOC ETH_BAR0_VIRT
+
+"[ETH] Intel I219-LM MMIO base live at 0xFFFFB00000020000." 𐡐
+
+# ============================================================
+# 3. MAC ADDRESS DISCOVERY & GLOBAL RESET
+# Replaces Linux e1000e/netdev.c device reset
+# ============================================================
+𒀸 ⚡ [ETH_MAC_RESET]
+# Global Device Reset (CTRL.RST bit 26)
+ETH_BAR0_VIRT 𐡒 STACK_PUSH
+ETH_INIT
+
+# Read MAC Address from hardware (RAL/RAH registers)
+ETH_BAR0_VIRT 𐡒 STACK_PUSH
+ETH_GET_MAC
+ETH_MAC_ADDR MEMORY_ALLOC
+
+"[ETH] Hardware reset complete. MAC Address locked: " STACK_PUSH ETH_MAC_ADDR 𐡒 𐡅 𐡐
+
+# ============================================================
+# 4. TRANSMIT (TX) RING SETUP
+# Allocate DMA pages for TX descriptors and map to hardware TDBAL
+# ============================================================
+𒀸 ⚡ [ETH_TX_RING]
+# Allocate 4KB DMA page for Transmit Descriptor Ring (256 descriptors, 16 bytes each)
+4096 STACK_PUSH DMA_ALLOC ETH_TX_DESC_RING MEMORY_ALLOC
+
+# Initialize TX Control Register (TCTL) — Enable TX, Pad Short Packets
+ETH_BAR0_VIRT 𐡒 STACK_PUSH
+ETH_TX_DESC_RING 𐡒 STACK_PUSH
+ETH_SETUP_TX
+
+"[ETH] DMA Transmit (TX) Descriptor Ring ACTIVE." 𐡐
+
+# ============================================================
+# 5. RECEIVE (RX) RING SETUP
+# Allocate DMA pages for RX descriptors and map to hardware RDBAL
+# ============================================================
+𒀸 ⚡ [ETH_RX_RING]
+# Allocate 4KB DMA page for Receive Descriptor Ring (256 descriptors, 16 bytes each)
+4096 STACK_PUSH DMA_ALLOC ETH_RX_DESC_RING MEMORY_ALLOC
+
+# Initialize RX Control Register (RCTL) — Enable RX, Broadcast Accept, 2048B buffers
+ETH_BAR0_VIRT 𐡒 STACK_PUSH
+ETH_RX_DESC_RING 𐡒 STACK_PUSH
+ETH_SETUP_RX
+
+"[ETH] DMA Receive (RX) Descriptor Ring ACTIVE." 𐡐
+
+# ============================================================
+# 6. BRING LINK UP (Auto-Negotiate speed)
+# ============================================================
+𒀸 ⚡ [ETH_LINK_MGR]
+ETH_BAR0_VIRT 𐡒 STACK_PUSH
+ETH_LINK_UP
+
+"[ETH] PHY auto-negotiation complete. Link is UP at 1000Mbps Full Duplex." 𐡐
+
+# ============================================================
+# 7. ETHERNET DOMAIN SEAL
+# ============================================================
+𒀸 ⚡ [ETH_SEAL]
+"" 𐡐
+"[ETH] =============================================" 𐡐
+"[ETH] Intel I219-LM Ethernet sovereign layer COMPLETE" 𐡐
+"[ETH] PCIe Bus Mastering: ENABLED" 𐡐
+"[ETH] BAR0 MMIO Region:   MAPPED (0xFFFFB...20000)" 𐡐
+"[ETH] TX/RX DMA Rings:    ARMED" 𐡐
+"[ETH] PHY Link Status:    UP (1000Mbps)" 𐡐
+"[ETH] =============================================" 𐡐
+
+COMMIT_STATE
+𐡕

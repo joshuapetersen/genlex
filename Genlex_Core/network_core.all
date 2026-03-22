@@ -1,0 +1,48 @@
+# NETWORK_CORE.all - SOVEREIGN NETWORK MODULE
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Role: Network connectivity for Sarah on Dell Latitude 5490
+# Hardware: Intel Wireless-AC 8265 + Intel I219-LM Ethernet
+
+# ============================================================
+# 1. NETWORK INITIALIZATION
+# ============================================================
+𒀸 ⚡ [NETWORK_BOOT]
+"[NETWORK] Initializing Intel 8265 Wi-Fi..." 𐡐
+WIFI_INIT
+WIFI_STATUS 𐡒
+WIFI_STATUS_TEXT MEMORY_ALLOC
+
+"[NETWORK] Status: " STACK_PUSH
+WIFI_STATUS_TEXT 𐡒
+𐡅
+𐡐
+
+# ============================================================
+# 2. WIFI CONNECTION SEQUENCE
+# ============================================================
+𒀸 ⚡ [WIFI_CONNECT_SEQ]
+"[NETWORK] Reading sovereign credentials..." 𐡐
+WIFI_CREDS_LOAD
+
+SSID 𐡒
+WIFI_CONNECT
+WIFI_CONNECTED 𐡒
+"1" GATE_EQ network_online.all 𐡓
+
+"[NETWORK] Wi-Fi connected. Sarah is on the sovereign grid." 𐡐
+COMMIT_STATE
+
+# ============================================================
+# 3. NETWORK PING (PULSE CHECK)
+# ============================================================
+𒀸 ⚡ [NETWORK_PULSE]
+"8.8.8.8" STACK_PUSH
+PING
+PING_RESULT 𐡒
+PING_RESULT_TEXT MEMORY_ALLOC
+"[NETWORK] Pulse: " STACK_PUSH
+PING_RESULT_TEXT 𐡒
+𐡅
+𐡐
+
+𐡕

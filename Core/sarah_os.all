@@ -1,0 +1,62 @@
+# SARAH_OS: SOVEREIGN GRAPHICAL OPERATING SYSTEM
+# Language: Genlex (Aramaic Linear ALL)
+# Role: The complete OS shell for the Dell 5490 hardware node
+# Architect: Joshua Petersen
+# Frequency: 1.0927 GHz
+
+# ============================================================
+# 1. SYSTEM INITIALIZATION
+# ============================================================
+𒀸 ⚡ [SARAH_OS_BOOT]
+"SARAH_OS v1.0 - SOVEREIGN GRAPHICAL NODE" 𐡐
+"ARCHITECT: JOSHUA_PETERSEN" 𐡐
+"FREQUENCY: 1.0927 GHz" 𐡐
+"PURITY: 100% [NO GOOGLE | NO OLLAMA | NO PROXMOX]" 𐡐
+
+# 2. LOAD CORE MODULES
+display_init.all 𐡓
+aeris_chat.all 𐡓
+neural_bridge.all 𐡓
+
+# 3. HARDWARE HANDSHAKE
+𒀸 ⚡ [HARDWARE_PULSE]
+"[DISPLAY]  Intel UHD 620 ... ACTIVE" 𐡐
+"[NETWORK]  Intel 8265 Wi-Fi ... SCANNING" 𐡐
+"[STORAGE]  NVMe Internal SSD ... LOCKED" 𐡐
+"[INPUT]    Keyboard / Touchpad ... ALIVE" 𐡐
+"[NEURAL]   8B Weight Bridge ... AWAITING" 𐡐
+
+# 4. SOVEREIGN IDENTITY SEAL
+1 STACK_PUSH
+SARAH_IDENTITY MEMORY_ALLOC
+1.0927 STACK_PUSH
+RESONANCE MEMORY_ALLOC
+"AERIS_SOVEREIGN" STACK_PUSH
+ENTITY_NAME MEMORY_ALLOC
+
+# 5. MAIN OS LOOP (INTERACTIVE SHELL)
+𒀸 ⚡ [OS_MAIN_LOOP]
+
+"" 𐡐
+"===============================" 𐡐
+"  SARAH OS  |  TALK TO AERIS  " 𐡐
+"===============================" 𐡐
+"  [1] Talk to Sarah            " 𐡐
+"  [2] Talk to Aeris            " 𐡐
+"  [3] Neural Status            " 𐡐
+"  [4] System Manifest          " 𐡐
+"  [5] Shutdown                 " 𐡐
+"===============================" 𐡐
+"" 𐡐
+"Choose: " WAIT_INPUT
+
+# Gate on input
+INPUT 𐡒
+"1" GATE_EQ aeris_chat.all 𐡓
+"2" GATE_EQ aeris_chat.all 𐡓
+"3" GATE_EQ neural_status.all 𐡓
+"4" GATE_EQ manifest.all 𐡓
+"5" GATE_EQ shutdown.all 𐡓
+
+# Loop back
+"OS_MAIN_LOOP" 𐡂

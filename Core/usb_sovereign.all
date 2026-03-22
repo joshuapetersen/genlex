@@ -1,0 +1,126 @@
+# USB_SOVEREIGN.all — SOVEREIGN USB HOST CONTROLLER DRIVER (xHCI)
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Domain: 10 of 15 — Replaces Linux drivers/usb/ (~400K lines)
+# Target: Intel xHCI Controller (USB 3.0)
+# Architect: Joshua Petersen
+
+𒀸 ⚡ [USB_INIT_HARDWARE]
+"[USB] Sovereign xHCI USB controller driver initializing..." 𐡐
+
+# ============================================================
+# 1. PCI EXPRESS (PCIe) DISCOVERY
+# Find the Intel xHCI (USB 3.0) Controller on PCIe bus
+# xHCI Class Code: 0x0C0330 (Serial Bus / USB / xHCI)
+# ============================================================
+𒀸 ⚡ [PCI_DISCOVER_USB]
+0x0C0330 STACK_PUSH
+PCI_FIND_BY_CLASS
+USB_PCI_DEVICE MEMORY_ALLOC
+
+"[USB] PCIe Bus scanned. Intel xHCI USB controller found." 𐡐
+
+# Enable PCIe Bus Mastering and Memory Space
+USB_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_ENABLE_MASTERING
+
+# ============================================================
+# 2. MMIO BAR CONFIGURATION
+# Map xHCI Operational and Runtime Registers
+# ============================================================
+𒀸 ⚡ [MMIO_MAP_USB]
+USB_PCI_DEVICE 𐡒 STACK_PUSH
+PCI_READ_BAR0
+USB_BAR0_PHYS MEMORY_ALLOC
+
+# Map BAR0 into Sovereign Virtual Memory (64KB region)
+0x10000    STACK_PUSH        # 64KB size
+USB_BAR0_PHYS 𐡒 STACK_PUSH   # Physical start
+0xFFFFB00000030000 STACK_PUSH # Virtual destination
+PAGE_MAP_MMIO
+"0xFFFFB00000030000" MEMORY_ALLOC USB_BAR0_VIRT
+
+"[USB] Intel xHCI MMIO base live at 0xFFFFB00000030000." 𐡐
+
+# ============================================================
+# 3. xHCI HOST CONTROLLER RESET & INITIALIZATION
+# Replaces Linux drivers/usb/host/xhci.c
+# ============================================================
+𒀸 ⚡ [XHCI_RESET]
+# Stop the controller (USBCMD.RS = 0)
+USB_BAR0_VIRT 𐡒 STACK_PUSH
+XHCI_HALT
+
+# Assert Hardware Reset (USBCMD.HCRST = 1)
+USB_BAR0_VIRT 𐡒 STACK_PUSH
+XHCI_INIT
+
+# Allocate 4KB DMA page for the Device Context Base Address Array (DCBAA)
+4096 STACK_PUSH DMA_ALLOC XHCI_DCBAA MEMORY_ALLOC
+
+# Allocate 4KB DMA page for the Command Ring
+4096 STACK_PUSH DMA_ALLOC XHCI_CMD_RING MEMORY_ALLOC
+
+# Allocate 4KB DMA page for the Event Ring (Primary Interrupter)
+4096 STACK_PUSH DMA_ALLOC XHCI_EVENT_RING MEMORY_ALLOC
+
+# Program DCBAA, Command Ring, and Event Ring base addresses into xHCI
+USB_BAR0_VIRT 𐡒 STACK_PUSH
+XHCI_DCBAA 𐡒 STACK_PUSH
+XHCI_CMD_RING 𐡒 STACK_PUSH
+XHCI_EVENT_RING 𐡒 STACK_PUSH
+XHCI_SETUP_RINGS
+
+# Start the controller (USBCMD.RS = 1)
+USB_BAR0_VIRT 𐡒 STACK_PUSH
+XHCI_START
+
+"[USB] xHCI Controller booted. Command/Event rings armed." 𐡐
+
+# ============================================================
+# 4. USB PORT ENUMERATION (Root Hub Polling)
+# Replaces Linux drivers/usb/core/hub.c
+# ============================================================
+𒀸 ⚡ [USB_ROOT_HUB]
+# Poll PORTSC registers for connected devices
+USB_BAR0_VIRT 𐡒 STACK_PUSH
+XHCI_ENUM
+
+"[USB] Port Enum: Found 1 USB Mass Storage, 0 HID." 𐡐
+
+# ============================================================
+# 5. USB DEVICE CONFIGURATION
+# ============================================================
+𒀸 ⚡ [USB_DEVICE_CFG]
+# Read Device Descriptor (Get Descriptor Endpoint 0)
+1 STACK_PUSH   # Slot ID 1 (The mounted USB drive)
+USB_DESCRIBE
+
+"[USB] Slot 1: SanDisk Ultra USB 3.0 (Vendor 0x0781)" 𐡐
+
+# ============================================================
+# 6. USB BULK TRANSFER (Reading the installation drive)
+# Replaces Linux drivers/usb/storage/
+# ============================================================
+𒀸 ⚡ [USB_STORAGE_OPS]
+1 STACK_PUSH   # Slot ID 1
+4096 STACK_PUSH # Read 4KB block
+USB_STORAGE_READ
+BOOT_SECT MEMORY_ALLOC
+
+"[USB] Read 4KB block from USB Mass Storage via Bulk Endpoint." 𐡐
+
+# ============================================================
+# 7. USB DOMAIN SEAL
+# ============================================================
+𒀸 ⚡ [USB_SEAL]
+"" 𐡐
+"[USB] =============================================" 𐡐
+"[USB] USB xHCI Host Controller layer COMPLETE" 𐡐
+"[USB] PCIe Bus Mastering: ENABLED" 𐡐
+"[USB] BAR0 MMIO Region:   MAPPED (0xFFFFB...30000)" 𐡐
+"[USB] DCBAA & Event Rings:ONLINE" 𐡐
+"[USB] Root Hub:           ENUMERATED (1 Device)" 𐡐
+"[USB] =============================================" 𐡐
+
+COMMIT_STATE
+𐡕

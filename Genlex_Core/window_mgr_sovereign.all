@@ -1,0 +1,350 @@
+# WINDOW_MGR_SOVEREIGN.all — GENESIS OS WINDOW MANAGER
+# Language: Genlex (Aramaic + Cuneiform + Mandarin + English)
+# Phase: 3 (The Sovereign GUI - Genesis Aesthetic)
+
+𒀸 ⚡ [WM_INIT]
+"[WM] Genesis Window Manager initializing..." 𐡐
+"[WM] Grid: 1920x1080. Aesthetic: Sovereign Void (Wireframe)." 𐡐
+
+# ============================================================
+# 1. DRAW A GENESIS WIREFRAME WINDOW
+# Instead of solid Windows 95 boxes, draw glowing cyan borders
+# with a highly transparent dark interior.
+# ============================================================
+𒀸 ⚡ [DRAW_GENESIS_WINDOW]
+# Window 1 Dimensions: X=300, Y=200, W=800, H=600
+
+# Step A: Draw the transparent interior (Simulated with a dark gray for now,
+# true alpha blending requires a GPU shader update in C++)
+300  STACK_PUSH  # X
+200  STACK_PUSH  # Y
+800  STACK_PUSH  # Width
+600  STACK_PUSH  # Height
+10   STACK_PUSH  # R
+10   STACK_PUSH  # G
+15   STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Step B: Draw the glowing wireframe borders (Cyan)
+# Top Border
+300  STACK_PUSH  # X
+200  STACK_PUSH  # Y
+800  STACK_PUSH  # Width
+2    STACK_PUSH  # Height
+0    STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Bottom Border
+300  STACK_PUSH  # X
+798  STACK_PUSH  # Y (200 + 600 - 2)
+800  STACK_PUSH  # Width
+2    STACK_PUSH  # Height
+0    STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Left Border
+300  STACK_PUSH  # X
+200  STACK_PUSH  # Y
+2    STACK_PUSH  # Width
+600  STACK_PUSH  # Height
+0    STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# Right Border
+1098 STACK_PUSH  # X (300 + 800 - 2)
+200  STACK_PUSH  # Y
+2    STACK_PUSH  # Width
+600  STACK_PUSH  # Height
+0    STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+"[WM] Genesis Wireframe Window 1 Drawn at (300,200)." 𐡐
+
+# ============================================================
+# 2. DRAW WINDOW TITLE BAR (Minimalist White Text)
+# ============================================================
+𒀸 ⚡ [DRAW_WINDOW_TITLE]
+# Draw a subtle separator line for the header
+300  STACK_PUSH  # X
+230  STACK_PUSH  # Y
+800  STACK_PUSH  # Width
+1    STACK_PUSH  # Height
+0    STACK_PUSH  # R
+150  STACK_PUSH  # G
+200  STACK_PUSH  # B
+GUI_DRAW_RECT
+
+# White Text Header
+315  STACK_PUSH  # X offset
+210  STACK_PUSH  # Y offset
+"AERIS NEURAL LINK [ACTIVE]" STACK_PUSH
+255  STACK_PUSH  # R
+255  STACK_PUSH  # G
+255  STACK_PUSH  # B
+GUI_DRAW_TEXT
+
+"[WM] Window 1 Header rendered." 𐡐
+
+# ============================================================
+# 3. DRAW INNER GEOMETRY (The Genesis "Icosahedron" abstraction)
+# ============================================================
+𒀸 ⚡ [DRAW_INNER_GEOMETRY]
+# Center of geometry: X=700, Y=500. Radius approx 100px.
+# We draw a 2D orthographic projection of a wireframe solid using the new GUI_DRAW_LINE opcode
+# Color: Sovereign Cyan (0, 255, 255)
+
+# Outer Hexagon lines
+600
+STACK_PUSH
+500
+STACK_PUSH
+650
+STACK_PUSH
+413
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+650
+STACK_PUSH
+413
+STACK_PUSH
+750
+STACK_PUSH
+413
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+750
+STACK_PUSH
+413
+STACK_PUSH
+800
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+800
+STACK_PUSH
+500
+STACK_PUSH
+750
+STACK_PUSH
+587
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+750
+STACK_PUSH
+587
+STACK_PUSH
+650
+STACK_PUSH
+587
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+650
+STACK_PUSH
+587
+STACK_PUSH
+600
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+# Inner star connections (to center 700,500)
+600
+STACK_PUSH
+500
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+650
+STACK_PUSH
+413
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+750
+STACK_PUSH
+413
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+800
+STACK_PUSH
+500
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+750
+STACK_PUSH
+587
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+650
+STACK_PUSH
+587
+STACK_PUSH
+700
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+255
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+# Inner bracing lines (Darker Blue)
+650
+STACK_PUSH
+413
+STACK_PUSH
+750
+STACK_PUSH
+587
+STACK_PUSH
+0
+STACK_PUSH
+150
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+750
+STACK_PUSH
+413
+STACK_PUSH
+650
+STACK_PUSH
+587
+STACK_PUSH
+0
+STACK_PUSH
+150
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+600
+STACK_PUSH
+500
+STACK_PUSH
+800
+STACK_PUSH
+500
+STACK_PUSH
+0
+STACK_PUSH
+150
+STACK_PUSH
+255
+STACK_PUSH
+GUI_DRAW_LINE
+
+"[WM] Inner Genesis Geometry (Wireframe Icosahedron) rendered." 𐡐
+
+COMMIT_STATE
+𐡕

@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools", "wheel", "pybind11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genesis-bridge"
+version = "0.1.0"
+description = "A pybind11 bridge between C++ and Python for SDNA logic."
+dependencies = [
+    "pybind11",
+]
