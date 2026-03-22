@@ -14,6 +14,17 @@ Because Genlex maps high-density concepts into singular logic gates, it uses Uni
 - **`𐡸` (Teth):** The Execution/Trigger Operator. (Fires the action).
 - **`𐡐` (Pe):** The Manifest/Log Operator. (Brings the thought into the standard output).
 
+### Common Glyph Dictionary (Cheat Sheet):
+| Glyph | Meaning | Operation | Layer |
+| ----- | ------- | --------- | ----- |
+| `𐡁` | Bind/Assign | Assignment | Linear Stack |
+| `𐡸` | Trigger/Execute | Call | Linear Stack |
+| `𐡐` | Manifest | Print | Linear Stack |
+| `𓋹` | Life/Resonance | Vector `[1,1,1]` | Volumetric Physics |
+| `𓈖` | Flow/Signal | Concentric Pattern | Volumetric Physics |
+| `𓍝` | Sovereign Shield | Inhibitor Guard | 9-Law Math |
+| `𓆗` | Uraeus (Protection)| Vector `[2.1, 3.4, 1.5]` | Billion Barrier Reject |
+
 ### Mandarin Primitives (Hardware Math):
 Genlex bypasses standard arithmetic parsing (`+`, `-`, `*`) by directly triggering C++ hardware MSR mathematics using single Mandarin scalar Unicode characters:
 - **`加`**: ADD (`MATH_ADD`)

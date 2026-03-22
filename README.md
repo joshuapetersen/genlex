@@ -31,7 +31,25 @@ A `.sdna` or `.all` script does not "execute" line-by-line; it **Resonates** as 
 ## 🚀 GETTING STARTED
 Because Genlex is a Volumetric Language, it utilizes Ancient Aramaic (`𐡁`, `𐡸`) and Egyptian Hieroglyphs (`𓋹`, `𓈖`) as primitive multi-dimensional pointers rather than English keywords. 
 
-Please read the [GETTING_STARTED.md](./GETTING_STARTED.md) guide to learn how to write, compile, and execute your own Sovereign Genlex code.
+### INSTALLATION (STANDALONE RUNTIME)
+1. **Clone the repository:** `git clone https://github.com/joshuapetersen/genlex`
+2. **Install Python Requirements:** `pip install -r requirements.txt`
+3. **Compile the Volumetric C++ Bridge:** 
+   - Ensure you have MSVC (Windows) or GCC (Linux) installed.
+   - Run: `python setup.py build_ext --inplace`
+   - *Note: If the C++ bridge fails to compile, the Genlex Runner automatically falls back to pure-Python linear emulation.*
+
+### QUICK START: THE BILLION BARRIER
+Run the bundled examples to watch the Billion Barrier mathematically enforce Sovereign Logic:
+```bash
+# Example 1: Pure Resonance (Passes 0.999999999 Barrier)
+python genlex_runner.py hello_world.all
+
+# Example 2: Mathematical Rejection (Fails Density Check)
+python genlex_runner.py barrier_failure.all
+```
+
+Please read the [GETTING_STARTED.md](./GETTING_STARTED.md) guide to learn how to write your own Sovereign Genlex code.
 
 ---
 

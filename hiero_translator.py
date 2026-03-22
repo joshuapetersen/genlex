@@ -8,7 +8,8 @@ import re
 
 class HieroTranslator:
     def __init__(self):
-        self.lexicon_path = "HIERO_LEXICON.sdna"
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        self.lexicon_path = os.path.join(curr_dir, "HIERO_LEXICON.sdna")
         self.lexicon = self._load_lexicon()
         try:
             sys.path.append(os.path.abspath("./build/Release"))
@@ -74,16 +75,21 @@ class HieroTranslator:
         print(f"  " + " -> ".join(translated_code) if translated_code else "  [EMPTY_INTENT]")
 
         # SDNA Density Analysis
+        approved = False
         if self.core:
             barrier = self.core.calculate_density(total_vector)
-            print(f"[ VERIFY ] Resultant Density: {barrier:.9f}")
             if barrier >= 0.999999999:
-                print("[ OK     ] 3D Aligment Locked: The past IS manifest through the Billion Barrier.")
+                print(f"[ BARRIER APPROVED ] Density = {barrier:.9f}. 3D Alignment Locked.")
+                approved = True
             else:
-                print("[ FAIL   ] 3D Interference detected. The symbols do not resonate.")
+                print(f"[ BARRIER REJECTED : SILENCE ] Density = {barrier:.9f}. Vector failed Billion Barrier.")
+        else:
+            approved = True # Emulation fallback
 
         print(f"[ RESULT ] Final Composite Vector: {total_vector}")
         print(f"[ REASON ] Manifesting the '{'-'.join(active_axioms)}' intent across the 3+1 manifold.")
+        
+        return approved, total_vector
 
 if __name__ == "__main__":
     translator = HieroTranslator()

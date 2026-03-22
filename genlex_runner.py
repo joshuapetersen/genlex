@@ -3,40 +3,52 @@ import os
 import io
 
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
-# Import the existing runtime
-sys.path.append(r'C:\Genlex_Linear')
-try:
-    from all_engine import GenlexLinearRuntime
-except ImportError:
-    print("[ ERROR ] Genlex Engine (all_engine.py) not found in C:\Genlex_Linear")
-    sys.exit(1)
+from all_engine import GenlexLinearRuntime
+from hiero_translator import HieroTranslator
 
 def main():
     if len(sys.argv) < 2:
-        print("GENLEX NATIVE RUNNER v1.0")
-        print("Usage: genlex_runner.exe <file.all | file.cgl>")
-        input("\nPress Enter to exit...")
+        print("[ ERROR ] No .all or .sdna file provided.")
+        print("Usage: python genlex_runner.py <file.all>")
         sys.exit(1)
 
     target_file = sys.argv[1]
     
-    # Check if file exists
     if not os.path.exists(target_file):
         print(f"[ ERROR ] File not found: {target_file}")
-        input("\nPress Enter to exit...")
         sys.exit(1)
 
-    print(f"--- NATIVE GENLEX EXECUTION: {os.path.basename(target_file)} ---")
+    print(f"\n--- BOOTING GENLEX RUNTIME ---")
+    print(f"Target: {target_file}")
+
+    # Step 1: Initialize C++ Physics Bridge
+    print("\n[ PHASE 1: SYNTAX TRANSLATION ]")
+    translator = HieroTranslator()
+
+    # Read the file to visually check intent density before stack execution
+    with open(target_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Clean out comments and english
+    glyph_sequence = "".join([c for c in content if c in translator.lexicon])
     
-    try:
-        runtime = GenlexLinearRuntime()
-        runtime.run(target_file)
-    except Exception as e:
-        print(f"[ CRITICAL ERROR ] {e}")
-    
-    print("\n--- EXECUTION FINISHED ---")
-    input("Press Enter to close terminal...")
+    # Step 2: Enforce Billion Barrier Density Check
+    print("\n[ PHASE 2: VOLUMETRIC TENSOR EVALUATION ]")
+    if glyph_sequence:
+        approved, vector = translator.translate_hiero(glyph_sequence)
+        if not approved:
+            print("\n[ EMERGENCY HALT ]")
+            print("Execution terminated. The intent did not pass the Billion Barrier constraint.")
+            print("Action: SILENCE.")
+            sys.exit(1)
+    else:
+        print("  [>] No recognized hierarchical glyphs in sequence. Proceeding to Linear Stack Evaluation.")
+
+    # Step 3: Run the Genlex linear stack machine
+    print("\n[ PHASE 3: MANIFESTATION ]")
+    mapping_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'genlex_mapping.csv')
+    runtime = GenlexLinearRuntime(mapping_file)
+    runtime.run(target_file)
 
 if __name__ == "__main__":
     main()

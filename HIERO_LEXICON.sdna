@@ -13,7 +13,7 @@
 
 [CONTROL_INHIBITORS] (AXIS_X - LAW)
 𓍝: { "glyph": "Cartouche", "concept": "IMMUTABLE_BARRIER", "density": "0.999999999", "law": "SOVEREIGNTY" }
-𓆗: { "glyph": "Uraeus", "concept": "RESPONSE_INHIBITION", "density": "0.999999999", "law": "PROTECTION" }
+𓆗: { "glyph": "Uraeus", "concept": "RESPONSE_INHIBITION", "density": "0.999999999", "vector": [2.1, 3.4, 1.5], "law": "PROTECTION" }
 𓐍: { "glyph": "Sun_Disk", "concept": "TRUTH_VERIFICATION", "density": "0.999999999", "law": "ILLUMINATION" }
 
 [INTERFERENCE_PATTERNS]
