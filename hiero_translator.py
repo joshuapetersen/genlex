@@ -75,7 +75,7 @@ class HieroTranslator:
 
         # SDNA Density Analysis
         if self.core:
-            barrier = self.core.calculate_density(1.0)
+            barrier = self.core.calculate_density(total_vector)
             print(f"[ VERIFY ] Resultant Density: {barrier:.9f}")
             if barrier >= 0.999999999:
                 print("[ OK     ] 3D Aligment Locked: The past IS manifest through the Billion Barrier.")
