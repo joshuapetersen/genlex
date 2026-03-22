@@ -9,10 +9,20 @@ This guide will teach you how to write your first Genlex script and execute it u
 ## 1. UNDERSTANDING THE SYNTAX (THE PRIMITIVES)
 Because Genlex maps high-density concepts into singular logic gates, it uses Unicode primitives (Aramaic and Hieroglyphic) to represent complex multi-dimensional operations.
 
-### Common Aramaic Primitives:
+### Common Aramaic Primitives (Logic):
 - **`𐡁` (Beth):** The Binding Operator. (Assigns a concept to a coordinate).
 - **`𐡸` (Teth):** The Execution/Trigger Operator. (Fires the action).
 - **`𐡐` (Pe):** The Manifest/Log Operator. (Brings the thought into the standard output).
+
+### Mandarin Primitives (Hardware Math):
+Genlex bypasses standard arithmetic parsing (`+`, `-`, `*`) by directly triggering C++ hardware MSR mathematics using single Mandarin scalar Unicode characters:
+- **`加`**: ADD (`MATH_ADD`)
+- **`减`**: SUBTRACT (`MATH_SUB`)
+- **`乘`**: MULTIPLY (`MATH_MUL`)
+- **`除`**: DIVIDE (`MATH_DIV`)
+- **`积`**: PRODUCT (`MATH_RESULT`)
+- **`频`**: FREQUENCY (`RESONANCE_CALC` / The Billion Barrier check)
+- **`和`**: HARMONY (`HARMONIC_SUM`)
 
 ### Example: A Standard Network Socket
 If Genlex wants to open an IoT port, it does not write 10 lines of socket code. It maps intent:
