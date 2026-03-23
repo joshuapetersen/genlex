@@ -1,3 +1,3 @@
 @echo off
 REM Sovereign ALL CLI - Global Execution
-python C:\Aramaic_Linear\all_engine.py %1
+python C:\genlex_repo\all_engine.py %1
