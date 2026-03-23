@@ -9,6 +9,7 @@ import pyautogui
 # Force UTF-8 for glyph processing
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
+class GenlexLinearRuntime:
     def __init__(self, mapping_path=None):
         """
         Initializes the Genlex Linear Runtime with the provided mapping.
