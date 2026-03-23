@@ -198,7 +198,6 @@ void ExecuteLine(EFI_HANDLE ImageHandle, CHAR8* line) {
 EFI_STATUS LoadAllScript(EFI_HANDLE ImageHandle, CHAR16* FileName) {
     EFI_LOADED_IMAGE *li;
     EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *fs;
-    EFI_FILE_IO_INTERFACE *io;
     EFI_FILE_HANDLE root, file;
     uefi_call_wrapper(ST->BootServices->HandleProtocol, 3, ImageHandle, &gEfiLoadedImageProtocolGuid, (VOID**)&li);
     uefi_call_wrapper(ST->BootServices->HandleProtocol, 3, li->DeviceHandle, &gEfiSimpleFileSystemProtocolGuid, (VOID**)&fs);
@@ -206,22 +205,31 @@ EFI_STATUS LoadAllScript(EFI_HANDLE ImageHandle, CHAR16* FileName) {
     EFI_STATUS status = uefi_call_wrapper(root->Open, 5, root, &file, FileName, EFI_FILE_MODE_READ, 0);
     if(EFI_ERROR(status)) return status;
 
-    CHAR8 buf[256];
-    UINTN sz = 255;
+    CHAR8 buf[513];
+    CHAR8 line_buffer[1024]; // Phase 13 fix for Break 11: Persistent line buffer
+    UINTN line_pos = 0;
+    UINTN sz = 512;
+
     while(uefi_call_wrapper(file->Read, 3, file, &sz, buf) == EFI_SUCCESS && sz > 0) {
-        buf[sz] = 0;
-        // Basic line-by-line split (simplified for UEFI)
-        CHAR8* p = buf;
-        while(*p) {
-            CHAR8* start = p;
-            while(*p && *p != '\n' && *p != '\r') p++;
-            CHAR8 old = *p; *p = 0;
-            ExecuteLine(start);
-            if(old) p++;
-            if(*p == '\n' || *p == '\r') p++;
+        for(UINTN i = 0; i < sz; i++) {
+            if(buf[i] == '\n' || buf[i] == '\r') {
+                if(line_pos > 0) {
+                    line_buffer[line_pos] = 0;
+                    ExecuteLine(ImageHandle, line_buffer);
+                    line_pos = 0;
+                }
+            } else {
+                if(line_pos < 1023) line_buffer[line_pos++] = buf[i];
+            }
         }
-        sz = 255;
+        sz = 512;
     }
+    // Final line
+    if(line_pos > 0) {
+        line_buffer[line_pos] = 0;
+        ExecuteLine(ImageHandle, line_buffer);
+    }
+
     uefi_call_wrapper(file->Close, 1, file);
     return EFI_SUCCESS;
 }

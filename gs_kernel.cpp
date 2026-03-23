@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+#include <atomic> // Phase 13 fix for Break 15
 
 // ============================================================
 // GSK v3.0: GENLEX SOVEREIGN KERNEL
@@ -174,15 +175,21 @@ public:
             return;
         }
         // GATE_EQ conditional: "VALUE" GATE_EQ target.all
-        if (line.find("GATE_EQ") != std::string::npos) {
-            size_t eq_pos = line.find("GATE_EQ");
+        // Phase 13 fix for Break 14: Use robust split to avoid accidental string matches
+        if (line.find(" GATE_EQ ") != std::string::npos) {
+            size_t eq_pos = line.find(" GATE_EQ ");
             std::string lhs = line.substr(0, eq_pos);
             lhs.erase(lhs.find_last_not_of(" \t") + 1);
+            lhs.erase(0, lhs.find_first_not_of(" \t"));
             if (!lhs.empty() && lhs.front() == '"') lhs = lhs.substr(1);
             if (!lhs.empty() && lhs.back() == '"') lhs.pop_back();
-            std::string rhs = line.substr(eq_pos + 7);
+            
+            std::string rhs = line.substr(eq_pos + 9); // length of " GATE_EQ "
             rhs.erase(0, rhs.find_first_not_of(" \t"));
             rhs.erase(rhs.find_last_not_of(" \t\r\n") + 1);
+            if (!rhs.empty() && rhs.front() == '"') rhs = rhs.substr(1);
+            if (!rhs.empty() && rhs.back() == '"') rhs.pop_back();
+
             std::string input_val = mem_read("INPUT");
             if (input_val == lhs && !rhs.empty()) {
                 run_script(script_base + "/" + rhs, depth + 1);
@@ -491,7 +498,8 @@ public:
         if (line.find("TASK_SPAWN") != std::string::npos) {
             std::string prio = string_stack.empty() ? "0" : string_stack.back(); if (!string_stack.empty()) string_stack.pop_back();
             std::string name = string_stack.empty() ? "UNKNOWN" : string_stack.back(); if (!string_stack.empty()) string_stack.pop_back();
-            static int next_pid = 1;
+            
+            static std::atomic<int> next_pid(1); // Phase 13 fix for Break 15: Atomic PID
             std::string pid = std::to_string(next_pid++);
             std::cout << "  [SCHED] Spawned Task: " << name << " (PID " << pid << ", Prio " << prio << ")" << std::endl;
             // Push PID back onto the stack to be allocated into memory by the next instruction

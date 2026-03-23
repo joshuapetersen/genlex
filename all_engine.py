@@ -9,20 +9,19 @@ import pyautogui
 # Force UTF-8 for glyph processing
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-class GenlexLinearRuntime:
-    """
-    Genlex Linear Runtime Engine v2.0 for the Sarah Hypervisor.
-    Implements a stack-based machine with proprietary modulation logic.
-    """
-    def __init__(self, mapping_path=r'C:\Genlex_Linear\genlex_mapping.csv'):
+    def __init__(self, mapping_path=None):
         """
         Initializes the Genlex Linear Runtime with the provided mapping.
         """
-        self.mapping_path = mapping_path
+        self.mapping_path = mapping_path or os.environ.get("GENLEX_MAPPING", r'C:\Genlex_Linear\genlex_mapping.csv')
         self.lexicon = self._load_mapping(self.mapping_path)
         self.stack = []
         self.memory = {}
         self.output_buffer = []
+
+        # Thread Pool for Parallel Pulses (Phase 13 fix for Break 9)
+        from concurrent.futures import ThreadPoolExecutor
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
         # --- SOVEREIGN RESONANCE MAP ---
         self.resonance_nodes = {}
@@ -155,7 +154,7 @@ class GenlexLinearRuntime:
         print(f"  ⚡ [ RESONANCE ] {name} ({filename}) Invoked directly via 3D Lattice.")
         # We simulate the 0-latency handover by invoking the module.
         import importlib.util
-        filepath = os.path.join(r"C:\SarahCore", filename)
+        filepath = os.path.join(os.environ.get("SA_ROOT", r"C:\SarahCore"), filename)
         if os.path.exists(filepath):
             try:
                 # In a real run, this would inject its output to the output_buffer/stack
@@ -248,8 +247,7 @@ class GenlexLinearRuntime:
                         except Exception as e:
                             print(f"[ PARALLEL_ERROR ] {t}: {e}")
                     
-                    thread = threading.Thread(target=bg_pulse, args=(target, self.mapping_path), daemon=True)
-                    thread.start()
+                    self.executor.submit(bg_pulse, target, self.mapping_path)
                 else:
                     print(f"    [ ERROR ] Parallel target not found: {target}")
         
@@ -283,6 +281,12 @@ class GenlexLinearRuntime:
         elif op == "OS_SHELL":
             if self.stack:
                 cmd = str(self.stack.pop())
+                # RCE GUARD (Phase 13 fix for Break 8)
+                if os.environ.get("SOVEREIGN_SHELL_ENABLED") != "1":
+                    print(f"    [ SECURITY REJECTION ] Shell Execution Blocked. (Set SOVEREIGN_SHELL_ENABLED=1)")
+                    self.stack.append("ERROR: Security Restriction In Place.")
+                    return
+
                 print(f"    [ SYSTEM ] Executing shell: {cmd}")
                 import subprocess
                 try:
@@ -406,19 +410,28 @@ class GenlexLinearRuntime:
 
         elif op == "LOAD_TENSOR":
             if len(self.stack) >= 2:
-                size = self.stack.pop()
+                size_raw = self.stack.pop()
                 path = str(self.stack.pop())
+                
+                # TYPE SAFETY (Phase 13 fix for Break 10)
+                try:
+                    size = int(float(size_raw))
+                except (ValueError, TypeError):
+                    print(f"    [ LOAD ERROR ] Invalid tensor size: {size_raw}")
+                    self.stack.append(None)
+                    return
+
                 import numpy as np
                 print(f"    [ SDNA_LOAD ] Pulling {size} parameters from {path}...")
                 
                 # SAFETY LATCH: If size is massive, use a symbolic placeholder to 
                 # prevent system freeze/RAM exhaustion during simulation.
                 safe_limit = 1000000 # 1 Million param limit for raw RAM allocation
-                if int(size) > safe_limit:
+                if size > safe_limit:
                     print(f"    [ WARNING ] Neural Overload detected. Using Symbolic Map for {size} params.")
                     self.stack.append(np.zeros(100).astype(np.float32)) # Symbolic small array
                 else:
-                    self.stack.append(np.random.randn(int(size)).astype(np.float32))
+                    self.stack.append(np.random.randn(size).astype(np.float32))
 
         elif op == "WAIT_INPUT":
             prompt_str = "You: "
@@ -440,6 +453,11 @@ class GenlexLinearRuntime:
             print("    [ SEAL ] State committed to execution_seal.json.")
             
         elif op == "SOVEREIGN_MIRROR":
+            # BOOT GUARD (Phase 13 fix for Break 7)
+            if os.environ.get("SOVEREIGN_MIRROR_ENABLED") != "1":
+                print("    [ SYSTEM ] Mirroring Blocked. EFI Boot modification requires SOVEREIGN_MIRROR_ENABLED=1.")
+                return
+
             print("    [ SYSTEM ] Mirroring Genesis to Physical ESP...")
             import subprocess
             cmd = (
