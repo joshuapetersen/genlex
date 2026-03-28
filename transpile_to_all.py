@@ -7,6 +7,11 @@ class ALL_Transpiler:
     """
     Sovereign Transpiler: Maps Python logical structures to Aramaic Linear Language (ALL).
     Focuses on zero-jitter execution and direct logic-to-runtime mapping.
+    
+    ONTOLOGICAL GROUNDING:
+    - THE ROCK: High-density core intent (ALL Opcodes).
+    - THE SLOSH: Low-density Python boilerplate (Stripped during ingestion).
+    - THE PULSE: 1.092777 Hz sync (Header injected).
     """
     
     OPCODES = {
