@@ -1,0 +1,38 @@
+; ════════════════════════════════════════════════════════════════
+; SDNA PULSE — Billion Barrier Verification
+; ════════════════════════════════════════════════════════════════
+; Implements the SDNA density check from Genlex Spec:
+;   If data density < 0.999999999, reject the manifestation.
+;
+; This program:
+;   1. Loads a test value
+;   2. Modulates it through the heartbeat
+;   3. Computes resonance density
+;   4. Checks against the Billion Barrier
+;   5. Outputs PASS (1.0) or FAIL (0.0)
+; ════════════════════════════════════════════════════════════════
+
+; Load test value and anchor
+LOAD_IMM r0 #1.0              ; test signal: 1.0
+LOAD_IMM r1 #ANCHOR           ; heartbeat
+
+; Modulate through 5 pulse cycles
+PULSE r0 0 0                  ; r0 *= 1.092777...
+PULSE r0 0 0                  ; r0 *= 1.092777...
+PULSE r0 0 0                  ; r0 *= 1.092777...
+PULSE r0 0 0                  ; r0 *= 1.092777...
+PULSE r0 0 0                  ; r0 = 1.0 * ANCHOR^5
+
+; Compute density: |r0| * ANCHOR
+DENSITY r0 0 0                ; r0 = |r0| * ANCHOR
+
+; Load the Billion Barrier
+LOAD_IMM r2 #BILLION          ; r2 = 0.999999999
+
+; Compare: did we pass the barrier?
+CMP_GT r0 r2 0                ; r0 = (density > barrier) ? 1.0 : 0.0
+
+; Store result
+STORE_OUT r0 0 0              ; output: 1.0 = PASS, 0.0 = FAIL
+
+HALT

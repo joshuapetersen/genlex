@@ -1,0 +1,39 @@
+; ════════════════════════════════════════════════════════════════
+; EMBED AND SEARCH — 57D Lattice Operations
+; ════════════════════════════════════════════════════════════════
+; Demonstrates the resonance search pipeline:
+;   1. Load query and memory values
+;   2. Embed via fractal hash
+;   3. Compute resonance score
+;   4. Compare against threshold
+;
+; This is what BrainScar does in ~200 lines of Python,
+; expressed as 20 glyph instructions.
+; ════════════════════════════════════════════════════════════════
+
+; Load query vector components (4D projection of 57D)
+LOAD_IMM r0 #42.0             ; query dimension 0
+LOAD_IMM r1 #13.7             ; query dimension 1
+LOAD_IMM r2 #27.3             ; query dimension 2
+LOAD_IMM r3 #9.81             ; query dimension 3
+
+; Embed each dimension through fractal hash
+EMBED r0 r4 0                 ; r4 = fractal_hash(r0, dim=4)
+EMBED r1 r5 0                 ; r5 = fractal_hash(r1, dim=5)
+EMBED r2 r6 0                 ; r6 = fractal_hash(r2, dim=6)
+EMBED r3 r7 0                 ; r7 = fractal_hash(r3, dim=7)
+
+; Compute resonance of embedded vector
+MOV r0 r4                     ; move embedded values to r0-r3
+MOV r1 r5
+MOV r2 r6
+MOV r3 r7
+RESONATE r0 0 0               ; r0 = resonance_score(r0..r3)
+
+; Apply heartbeat modulation
+PULSE r0 0 0                  ; r0 *= ANCHOR
+
+; Store the resonance score
+STORE_OUT r0 0 0              ; output the score
+
+HALT

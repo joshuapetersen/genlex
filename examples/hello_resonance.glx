@@ -1,0 +1,12 @@
+; ════════════════════════════════════════════════════════════════
+; HELLO RESONANCE — First Genlex Program
+; ════════════════════════════════════════════════════════════════
+; Computes: 42.0 * SOVEREIGN_ANCHOR = 45.8966...
+; This is the "Hello World" of the Sovereign Language.
+; 4 instructions. 24 bytes of silicon. That's the entire program.
+; ════════════════════════════════════════════════════════════════
+
+LOAD_IMM r0 #42.0             ; The Answer
+LOAD_IMM r1 #ANCHOR           ; The Heartbeat
+MUL r0 r1                     ; r0 = Answer * Heartbeat
+HALT                          ; Manifest complete
