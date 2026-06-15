@@ -61,6 +61,21 @@ Each glyph instruction is 4 bytes: `[opcode:8][regA:8][regB:8][flags:8]`
 | Binary density | 24.7x compression vs Python |
 | MBR size | 445 bytes code + 65 bytes program = 510 bytes |
 
+#### What These Numbers Mean
+
+**4.1 Million glyph-cycles/sec** — Each glyph instruction (PULSE, ADD, LOAD_IMM, etc.) is one cycle. The VM processes 4,100,000 individual glyph operations every second. The `boot_sequence.glx` program is 19 cycles — at this speed the VM executes that entire program **215,789 times per second**. Each full run takes ~4.6 microseconds.
+
+**73,565 compiles/sec** — One "compile" is the full assembler pipeline: read `.glx` source → parse glyph tokens → look up each in the 225-glyph table → pack into 4-byte binary opcodes → compute SHA-256 seal → write `.gbin`. The assembler does this entire pipeline 73,565 times every second. Each compile takes ~13.6 microseconds.
+
+**End-to-end under 100μs** — The full cycle from source code to executed result (compile + run) completes in under 0.0001 seconds. You could do 10,000 full compile-and-run cycles in one second.
+
+**Why it's this fast:** There is no parsing of English keywords. No abstract syntax tree. No optimization passes. A glyph IS the opcode — the assembler just looks up 4 bytes per token and writes them directly. The VM reads 4 bytes, dispatches to the handler, moves to the next instruction. Zero overhead.
+
+For comparison:
+- Python takes ~50ms just to import a single module
+- `gcc` takes ~100ms to compile "hello world"
+- Genlex compiles AND runs a program in 0.1ms — **1,000x faster than gcc compiles alone**
+
 ### Verified Targets
 
 | Target | Hardware | Status |
